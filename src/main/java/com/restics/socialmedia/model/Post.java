@@ -1,5 +1,6 @@
 package com.restics.socialmedia.model;
 
+
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -16,5 +17,4 @@ public record Post(
 
     public String getFormattedTimestamp() { // readble date format
         return createdAt != null ? createdAt.format(DateTimeFormatter.ofPattern("MMM dd, yyyy · HH:mm")) : "";
-    }
-}
+    }}
