@@ -59,8 +59,14 @@ public class PostCard extends VerticalLayout {
         Button likeBtn = new Button(" " + currentLikes, new Icon(VaadinIcon.HEART));
         likeBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ERROR);
         likeBtn.addClickListener(e -> {
-            postService.likePost(currentUser.userId(), post.postId());
-            currentLikes++;
+            if (postService.likedByUser(currentUser.userId(), post.postId())){
+                postService.unlikePost(currentUser.userId(), post.postId());
+            }
+            else{
+                postService.likePost(currentUser.userId(), post.postId());
+            }
+
+            currentLikes = postService.getNumLikes(post.postId());
             likeBtn.setText(" " + currentLikes);
         });
         actions.add(likeBtn);

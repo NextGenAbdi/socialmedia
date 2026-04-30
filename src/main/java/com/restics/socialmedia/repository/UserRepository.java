@@ -40,7 +40,10 @@ public class UserRepository {
     }
 
     public User findByName(String name) {
-        return jdbc.queryForObject("SELECT * FROM users u WHERE u.name = ? ORDER BY user_id", USER_MAPPER, name);
+        List<User> results = jdbc.query(
+                "SELECT * FROM users WHERE name = ?", USER_MAPPER, name
+        );
+        return results.isEmpty() ? null : results.get(0);
     }
 
     public User findByEmail(String email){
@@ -76,7 +79,4 @@ public class UserRepository {
                 user.bio(),
                 user.userId());
     }
-
-    //todo: addfollow
-
 }

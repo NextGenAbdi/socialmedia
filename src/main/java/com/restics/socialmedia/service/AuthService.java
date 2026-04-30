@@ -18,6 +18,7 @@ public class AuthService {
     }
     public boolean authenticate(CurrentUser cu, String name, String password) {
         User user = userRepository.findByName(name);
+        if (user == null) return false;
         cu.set(user); // should be fine since it passes the reference of the singleton?
         return Objects.equals(user.password(), password);
     }

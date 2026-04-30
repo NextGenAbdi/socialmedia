@@ -59,8 +59,23 @@ public class PostService {
         likeRepository.likePost(userId, postId);
     }
 
+    public void unlikePost(int userId, int postId){
+        likeRepository.unlikePost(userId, postId);
+    }
     public void sharePost(int userId, int postId){
         shareRepository.sharePost(userId, postId);
+    }
+
+    public int getNumLikes(int postId) {
+        return likeRepository.getPostLikes(postId);
+    }
+
+    public int getNumShares(int postId){
+        return shareRepository.getPostShares(postId);
+    }
+
+    public boolean likedByUser(int userId, int postId){
+        return likeRepository.likedByUserId(userId, postId);
     }
 
 
