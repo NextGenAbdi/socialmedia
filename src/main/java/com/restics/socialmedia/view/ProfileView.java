@@ -2,10 +2,10 @@ package com.restics.socialmedia.view;
 
 import java.util.List;
 
-import org.atmosphere.config.service.Post;
-
+import com.restics.socialmedia.CurrentUser;
+import com.restics.socialmedia.model.Post;
 import com.restics.socialmedia.model.User;
-// import com.restics.socialmedia.service.PostService; // Need to replace with new Post service
+import com.restics.socialmedia.service.PostService; // Need to replace with new Post service
 import com.restics.socialmedia.service.UserService;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.html.Image;
@@ -21,7 +21,7 @@ public class ProfileView extends VerticalLayout {
 
     private final PostService postService;
 
-    public ProfileView(UserService userService, PostService postService) {
+    public ProfileView(CurrentUser cu, PostService postService) {
         this.postService = postService;
 
         setSizeFull();
@@ -29,7 +29,7 @@ public class ProfileView extends VerticalLayout {
         setSpacing(true);
         setPadding(true);
 
-        User currentUser = userService.getCurrentUser();
+        User currentUser = cu.get();
         if (currentUser != null) {
             renderProfile(currentUser);
         } else {
@@ -76,12 +76,12 @@ public class ProfileView extends VerticalLayout {
 
         add(new H2("Personal Posts"));
 
-        List<Post> posts = postService.findPostsByUser(user.userId());
+        List<Post> posts = postService.getPostsOfUser(user.userId());
         if (posts.isEmpty()) {
             feed.add(new Span("No posts yet."));
         } else {
             for (Post post : posts) {
-                feed.add(new PostCard(post, postService, user.name()));
+                feed.add(new PostCard(post, postService, user));
             }
         }
 

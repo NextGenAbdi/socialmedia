@@ -2,8 +2,9 @@ package com.restics.socialmedia.view;
 
 import java.util.List;
 
-import org.atmosphere.config.service.Post;
-
+import com.restics.socialmedia.CurrentUser;
+import com.restics.socialmedia.model.Post;
+import com.restics.socialmedia.model.User;
 import com.restics.socialmedia.service.PostService; // Need to replace with new Post service
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -23,8 +24,9 @@ public class PostCard extends VerticalLayout {
 
     private int currentLikes;
 
-    public PostCard(Post post, PostService postService, String currentUser, boolean isReply) {
-        this.currentLikes = post.likes();
+    CurrentUser currentUser;
+    public PostCard(Post post, PostService postService, User currentUser, boolean isReply) {
+        this.currentLikes = postService.getNumLikes(post.postId());
 
         // Post card styling
         getStyle().set("border", "1px solid #e0e0e0").set("border-radius", "12px").set("padding", "16px");
@@ -57,22 +59,28 @@ public class PostCard extends VerticalLayout {
         Button likeBtn = new Button(" " + currentLikes, new Icon(VaadinIcon.HEART));
         likeBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY, ButtonVariant.LUMO_ERROR);
         likeBtn.addClickListener(e -> {
-            postService.likePost(post.postId());
-            currentLikes++;
+            if (postService.likedByUser(currentUser.userId(), post.postId())){
+                postService.unlikePost(currentUser.userId(), post.postId());
+            }
+            else{
+                postService.likePost(currentUser.userId(), post.postId());
+            }
+
+            currentLikes = postService.getNumLikes(post.postId());
             likeBtn.setText(" " + currentLikes);
         });
         actions.add(likeBtn);
 
         if (!isReply) {
             // Reply
-            Button replyBtn = new Button(" " + post.replies(), new Icon(VaadinIcon.COMMENT));
+            Button replyBtn = new Button(" " + postService.getNumReplies(post.postId()), new Icon(VaadinIcon.COMMENT));
             replyBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             replyBtn.addClickListener(e -> openReplyDialog(post, postService, currentUser));
             actions.add(replyBtn);
         }
 
         // Edit/Delete for Owner
-        if (currentUser != null && currentUser.equalsIgnoreCase(post.author())) {
+        if (currentUser != null && currentUser.userId()==post.authorId()) {
             Button editBtn = new Button("Edit", new Icon(VaadinIcon.EDIT));
             editBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             editBtn.addClickListener(e -> openEditDialog(post, postService, contentText));
@@ -87,7 +95,7 @@ public class PostCard extends VerticalLayout {
         add(actions);
     }
 
-    private void openReplyDialog(Post post, PostService postService, String currentUser) {
+    private void openReplyDialog(Post post, PostService postService, User currentUser) {
         Dialog dialog = new Dialog();
         dialog.setHeaderTitle("Replies");
         VerticalLayout list = new VerticalLayout();
@@ -99,7 +107,7 @@ public class PostCard extends VerticalLayout {
         field.setWidthFull();
         
         Button submit = new Button("Reply", e -> {
-            postService.replyToPost(post.postId(), field.getValue());
+            postService.replyToPost(currentUser.userId(), post.postId(), field.getValue());
             dialog.close();
             Notification.show("Reply posted");
         });
@@ -147,7 +155,7 @@ public class PostCard extends VerticalLayout {
         dialog.open();
     }
 
-    public PostCard(Post post, PostService postService, String currentUser) {
+    public PostCard(Post post, PostService postService, User currentUser) {
         this(post, postService, currentUser, false);
     }
 }

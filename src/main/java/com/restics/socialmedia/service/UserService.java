@@ -1,10 +1,9 @@
 package com.restics.socialmedia.service;
 
-import com.restics.socialmedia.dto.UserResponseDTO;
+import com.restics.socialmedia.CurrentUser;
 import com.restics.socialmedia.model.Post;
 import com.restics.socialmedia.model.User;
-import com.restics.socialmedia.repository.UserRepository;
-import com.restics.socialmedia.model.User;
+import com.restics.socialmedia.repository.FollowRepository;
 import com.restics.socialmedia.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -15,15 +14,27 @@ public class UserService {
 
     private final UserRepository userRepo;
 
-    public UserService(UserRepository userRepo) {
+    private final FollowRepository followRepo;
+
+    public UserService(UserRepository userRepo, FollowRepository followRepo) {
         this.userRepo = userRepo;
+        this.followRepo = followRepo;
     }
 
     public List<User> getAllUsers() {
         return userRepo.findAll();
     }
+
+    public User getUserByName(String name){
+        return userRepo.findByName(name);
+    }
+
+    public User getUserById(int id){
+        return userRepo.findById(id);
+    }
     
-    public List<User> getFollowedUsers(String userId) { return null;}
-    
-    public List<Post> getPostsOfUser(String userId){ return null;}
+    public List<User> getFollowedUsers(int userId) {
+        return followRepo.getFollowedUsers(userId);
+    }
+
 }
