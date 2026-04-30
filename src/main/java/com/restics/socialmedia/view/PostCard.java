@@ -26,7 +26,7 @@ public class PostCard extends VerticalLayout {
 
     CurrentUser currentUser;
     public PostCard(Post post, PostService postService, User currentUser, boolean isReply) {
-        this.currentLikes = post.likes();
+        this.currentLikes = postService.getNumLikes(post.postId());
 
         // Post card styling
         getStyle().set("border", "1px solid #e0e0e0").set("border-radius", "12px").set("padding", "16px");
@@ -73,7 +73,7 @@ public class PostCard extends VerticalLayout {
 
         if (!isReply) {
             // Reply
-            Button replyBtn = new Button(" " + post.replies(), new Icon(VaadinIcon.COMMENT));
+            Button replyBtn = new Button(" " + postService.getNumReplies(post.postId()), new Icon(VaadinIcon.COMMENT));
             replyBtn.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
             replyBtn.addClickListener(e -> openReplyDialog(post, postService, currentUser));
             actions.add(replyBtn);

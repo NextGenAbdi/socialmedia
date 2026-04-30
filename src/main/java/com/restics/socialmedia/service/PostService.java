@@ -74,6 +74,10 @@ public class PostService {
         return shareRepository.getPostShares(postId);
     }
 
+    public int getNumReplies(int postId){
+        return postRepository.getNumReplies(postId);
+    }
+
     public boolean likedByUser(int userId, int postId){
         return likeRepository.likedByUserId(userId, postId);
     }

@@ -105,6 +105,15 @@ public class PostRepository {
                 postId);
     }
 
+    public int getNumReplies(int postId){
+        Integer count = jdbc.queryForObject(
+                "SELECT COUNT(*) " +
+                "FROM Post p " +
+                "WHERE p.parent_post_id = ?",
+                Integer.class,
+                postId);
+        return count != null ? count : 0;
+    }
     public List<Post> getFollowingPosts(int userId){
         return jdbc.query(
                 "SELECT p.post_id, p.parent_post_id, u.name, u.user_id, " +
