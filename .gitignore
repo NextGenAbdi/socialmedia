@@ -35,3 +35,16 @@ out/
 
 ### VS Code ###
 .vscode/
+# Vaadin specific
+node_modules/
+/src/main/bundles/
+/src/main/resources/META-INF/VAADIN/webapp/
+/src/main/resources/META-INF/VAADIN/config/
+/src/main/resources/static/VAADIN/
+/frontend/generated/
+package.json
+package-lock.json
+tsconfig.json
+types.d.ts
+vite.config.ts
+vite.generated.ts
